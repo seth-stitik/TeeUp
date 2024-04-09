@@ -12,15 +12,13 @@ function Login() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }), // Send email and password
+                body: JSON.stringify({ email, password }),
             });
 
             if (response.ok) {
                 const data = await response.json();
                 alert('Login successful');
                 console.log('Token:', data.token);
-                // You might want to do something with the token here
-                // For example, storing it in localStorage or context for future requests
             } else {
                 alert('Failed to login');
             }
