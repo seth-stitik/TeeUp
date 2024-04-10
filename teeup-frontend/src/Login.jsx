@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext.jsx';
 
 function Login() {
     const [email, setEmail] = useState(''); // Use email for login
     const [password, setPassword] = useState('');
+    const { setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,9 +20,11 @@ function Login() {
             });
 
             if (response.ok) {
-                const data = await response.json();
+                const { token } = await response.json();
                 alert('Login successful');
-                console.log('Token:', data.token);
+                localStorage.setItem('token', token); // Stores the token in local storage
+                setAuth({ token: token, isLoggedIn: true });
+                navigate('/profile');
             } else {
                 alert('Failed to login');
             }
