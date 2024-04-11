@@ -23,7 +23,8 @@ function Login() {
                 const { token } = await response.json();
                 alert('Login successful');
                 localStorage.setItem('token', token); // Stores the token in local storage
-                setAuth({ token: token, isLoggedIn: true });
+                // setAuth({ token: token, isLoggedIn: true });
+                setAuth({ token: responseToken, isLoggedIn: true, userId: responseUserId});
                 navigate('/profile');
             } else {
                 alert('Failed to login');
@@ -63,3 +64,5 @@ function Login() {
 }
 
 export default Login;
+
+
