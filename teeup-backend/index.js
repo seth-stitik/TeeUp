@@ -8,6 +8,8 @@ const pool = require('./db');
 const { authenticateToken } = require('./middleware/authMiddleware');
 
 const postRoutes = require('./routes/postRoutes');
+const likeRoutes = require('./routes/likeRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 
 const app = express();
 const port = 5000;
@@ -21,6 +23,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json()); // Parse JSON bodies
 app.use('/api', postRoutes);
+app.use('/api/likes', likeRoutes);
+app.use('/api/comments', commentRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to TeeUp!');
