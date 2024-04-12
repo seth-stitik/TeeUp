@@ -58,7 +58,7 @@ function PostItem({ post, currentUserId, onDelete, onEdit }) {
           <h3>{post.user_id}</h3>
           <p>{post.content}</p>
           <small>{new Date(post.created_at).toLocaleString()}</small>
-          {currentUserId === post.user_id && (
+          {Number(currentUserId) === post.user_id && (
             <button onClick={() => setIsEditing(true)}>Edit</button>
           )}
           <button onClick={handleDelete}>Delete</button>
