@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react'; // Import useContext
+import { AuthContext } from './AuthContext'; // Adjust the import path as necessary
 import CreatePost from './CreatePost';
 import PostItem from './PostItem';
 
 const PostsFeed = () => {
   const [posts, setPosts] = useState([]);
-  const currentUserId = localStorage.getItem('userId'); // Example: Get the current user's ID from localStorage
+  const { auth } = useContext(AuthContext); // Use AuthContext to get the auth state
+  const currentUserId = auth.userId; // Get currentUserId from the auth state
 
   useEffect(() => {
     fetchPosts();
@@ -35,7 +37,7 @@ const PostsFeed = () => {
           <PostItem
             key={post.id}
             post={post}
-            currentUserId={currentUserId}
+            currentUserId={currentUserId} // Pass currentUserId obtained from AuthContext
             onDelete={refreshPosts}
             onEdit={refreshPosts}
           />
