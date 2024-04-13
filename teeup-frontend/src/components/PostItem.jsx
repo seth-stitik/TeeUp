@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
+import LikeButton from './LikeButton';
+import Comments from './Comments';
 
 function PostItem({ post, currentUserId, onDelete, onEdit }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
-
-  console.log(`Current User ID: ${currentUserId}, Type: ${typeof currentUserId}`);
-  console.log(`Post User ID: ${post.user_id}, Type: ${typeof post.user_id}`);
 
   const handleDelete = async () => {
     const token = localStorage.getItem('token'); // Retrieve token from where you store it
@@ -55,13 +54,17 @@ function PostItem({ post, currentUserId, onDelete, onEdit }) {
         </>
       ) : (
         <>
-          <h3>{post.user_id}</h3>
+          <h3>{post.username} - {post.user_id}</h3>
           <p>{post.content}</p>
           <small>{new Date(post.created_at).toLocaleString()}</small>
+          <LikeButton postId={post.id} />
+          <Comments postId={post.id} />
           {Number(currentUserId) === post.user_id && (
+            <>
             <button onClick={() => setIsEditing(true)}>Edit</button>
+            <button onClick={handleDelete}>Delete</button>
+            </>
           )}
-          <button onClick={handleDelete}>Delete</button>
         </>
       )}
     </div>
