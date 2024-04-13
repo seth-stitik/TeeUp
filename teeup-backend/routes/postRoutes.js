@@ -6,8 +6,8 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 // GET all posts
 router.get('/posts', async (req, res) => {
     try {
-        const newPostQuery = 'SELECT * FROM posts ORDER BY created_at DESC';
-        const { rows } = await pool.query(newPostQuery);
+        const query = 'SELECT posts.*, users.username FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC';
+        const { rows } = await pool.query(query);
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -20,7 +20,7 @@ router.post('/posts', authenticateToken, async (req, res) => {
     try {
         const { content } = req.body;
         const user_id = req.user.userId;
-        const newPostQuery = 'INSERT INTO posts (user_id, content, created_at) VALUES ($1, $2, NOW()) RETURNING *'; // NOW() is a PostgreSQL function that returns the current date and time
+        const newPostQuery = 'INSERT INTO posts (user_id, content, created_at) VALUES ($1, $2, NOW()) RETURNING *';
 
         const { rows } = await pool.query(newPostQuery, [user_id, content]);
         res.status(201).json(rows[0]);

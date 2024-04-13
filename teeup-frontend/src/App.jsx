@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import './App.css';
-import NavBar from './NavBar';
-import WelcomeMessage from './WelcomeMessage';
-import Signup from './Signup';
-import Login from './Login';
-import Profile from './Profile';
-import PostsFeed from './PostsFeed';
-import ProtectedRoute from './ProtectedRoute.jsx';
+import './styles/App.css';
+import NavBar from './components/NavBar';
+import WelcomeMessage from './components/WelcomeMessage';
+import Signup from './components/Signup';
+import Login from './components/Login';
+import Profile from './components/Profile';
+import PostsFeed from './components/PostsFeed';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+
 
 function App() {
   return (
