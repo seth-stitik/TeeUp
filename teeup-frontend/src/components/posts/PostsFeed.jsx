@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'; // Import useContext
-import { AuthContext } from './AuthContext'; // Adjust the import path as necessary
+import React, { useState, useEffect, useContext } from 'react'; 
+import { AuthContext } from '../../context/AuthContext';
 import CreatePost from './CreatePost';
 import PostItem from './PostItem';
 

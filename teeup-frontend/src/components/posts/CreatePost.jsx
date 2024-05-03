@@ -5,7 +5,7 @@ function CreatePost({ onPostCreated }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('token'); // Assuming you store your token in localStorage
+        const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
         const response = await fetch('http://localhost:5000/api/posts', {
           method: 'POST',
           headers: {
