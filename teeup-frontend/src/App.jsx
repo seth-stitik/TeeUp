@@ -1,13 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import './App.css';
-import NavBar from './NavBar';
-import WelcomeMessage from './WelcomeMessage';
-import Signup from './Signup';
-import Login from './Login';
-import Profile from './Profile';
-import PostsFeed from './PostsFeed';
-import ProtectedRoute from './ProtectedRoute.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './styles/App.css';  // Correctly point to the CSS file in the styles folder
+import NavBar from './components/common/NavBar';  // Correct the path
+import WelcomeMessage from './components/common/WelcomeMessage';  // Correct the path
+import Signup from './components/auth/Signup';  // Correct the path
+import Login from './components/auth/Login';  // Correct the path
+import Profile from './components/profile/Profile';  // Correct the path
+import PostsFeed from './components/posts/PostsFeed';  // Correct the path
+import ProtectedRoute from './routes/ProtectedRoute';  // Correct the path
 
 function App() {
   return (
@@ -20,10 +20,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={
             <ProtectedRoute>
-              <Profile /> {/* This is your protected component, such as a user's profile */}
+              <Profile />
             </ProtectedRoute>
           } />
-          {/* Make the feed accessible as a protected route if it should be visible only to logged-in users */}
           <Route path="/feed" element={
             <ProtectedRoute>
               <PostsFeed />
