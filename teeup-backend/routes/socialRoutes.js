@@ -12,7 +12,12 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 // GET all posts
 router.get('/posts', async (req, res) => {
     try {
-        const newPostQuery = 'SELECT * FROM posts ORDER BY created_at DESC';
+        const newPostQuery = `
+            SELECT posts.*, users.username
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            ORDER BY created_at DESC
+            `;
         const { rows } = await pool.query(newPostQuery);
         res.json(rows);
     } catch (err) {
@@ -91,15 +96,23 @@ router.post('/likes', authenticateToken, async (req, res) => {
     }
 });
 
-// GET likes count for a post
-router.get('/likes/count/:postId', async (req, res) => {
+// GET likes count for a post and check if current user liked the post
+router.get('/likes/count/:postId', authenticateToken, async (req, res) => {
     const { postId } = req.params;
+    const userId = req.user.userId; 
     try {
-        const result = await pool.query(
+        const likeCount = await pool.query(
             'SELECT COUNT(*) FROM likes WHERE post_id = $1',
             [postId]
         );
-        res.json({ postId: postId, count: parseInt(result.rows[0].count) });
+        const userLike = await pool.query(
+            'SELECT * FROM likes WHERE post_id = $1 AND user_id = $2',
+            [postId, userId]
+        );
+        res.json({ 
+            count: parseInt(likeCount.rows[0].count),
+            likedByCurrentUser: userLike.rowCount > 0  
+        });
     } catch (error) {
         console.error('Error fetching like count:', error);
         res.status(500).send('Unable to fetch like count');
@@ -138,7 +151,11 @@ router.post('/comments', authenticateToken, async (req, res) => {
     const { user_id, post_id, content } = req.body;
     try {
         const result = await pool.query('INSERT INTO comments (user_id, post_id, content, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *', [user_id, post_id, content]);
-        res.status(201).json(result.rows[0]);
+        if (result.rows.length > 0) {
+            res.status(201).json(result.rows[0]);
+        } else {
+            res.status(400).send('Comment not added');
+        }
     } catch (error) {
         console.error('Error adding comment', error);
         res.status(500).send('Unable to add comment');
@@ -149,22 +166,17 @@ router.post('/comments', authenticateToken, async (req, res) => {
 router.get('/comments/post/:post_id', async (req, res) => {
     const { post_id } = req.params;
     try {
-        const result = await pool.query('SELECT * FROM comments WHERE post_id = $1 ORDER BY created_at DESC', [post_id]);
+        const result = await pool.query(`
+            SELECT comments.*, users.username 
+            FROM comments 
+            JOIN users ON comments.user_id = users.id 
+            WHERE comments.post_id = $1 
+            ORDER BY comments.created_at DESC
+        `, [post_id]);
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching comments', error);
         res.status(500).send('Unable to get comments');
-    }
-});
-
-// Get all comments (testing purposes only)
-router.get('/comments', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM comments');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error fetching all comments:', error);
-        res.status(500).send('Unable to fetch comments');
     }
 });
 
@@ -179,7 +191,5 @@ router.delete('/comments/:id', authenticateToken, async (req, res) => {
         res.status(500).send('Unable to remove comment');
     }
 });
-
-// Add additional routes for likes and comments if necessary here...
 
 module.exports = router;
